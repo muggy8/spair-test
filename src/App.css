@@ -1,32 +1,16 @@
-.App {
-  text-align: center;
+.mapboxgl-marker {
+	--marker-size: 0.3em;
+	display: block;
+	width: var(--marker-size);
+	height: var(--marker-size);
+	background-color: #222;
+	border-radius: calc(var(--marker-size) / 2);
+	transition: opacity 0.5s;
+	transition-timing-function: linear;
+	animation: blink 1.5s infinite;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@-webkit-keyframes blink {
+  0% { opacity: 1; }
+  100%   { opacity: 0; }
 }
