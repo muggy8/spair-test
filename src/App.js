@@ -57,30 +57,43 @@ class App extends Component {
 
 	}
 	render() {
-		let busMarkers = this.state.busses.map(bus=>{
-			return (
-				<Marker key={bus.id} longitude={bus.vehicle.position.longitude} latitude={bus.vehicle.position.latitude}>
-				</Marker>
-			)
-		})
+		let busMarkers = []
 
-		return (
-			<div >
-				<ReactMapGL
-				// pass over the relavant attributes in case we add more later
-				width={this.state.viewport.width}
-				height={this.state.viewport.height}
-				latitude={this.state.viewport.latitude}
-				longitude={this.state.viewport.longitude}
-				zoom={this.state.viewport.zoom}
-				mapboxApiAccessToken={mapBoxToken}
+		let bounds = this.state.srcMap && this.state.srcMap.getBounds()
+		if (bounds){
+			let maxNorth = bounds.getNorth()
+			let maxSouth = bounds.getSouth()
+			let maxEast = bounds.getEast()
+			let maxWest = bounds.getWest()
+			this.state.busses.filter(bus=>{
+				let lng = bus.vehicle.position.longitude
+				let lat = bus.vehicle.position.latitude
+				return lng >= maxWest && lng <= maxEast && lat <= maxNorth && lat >= maxSouth
+			}).forEach(bus=>{
+				busMarkers.push((<Marker key={bus.id} longitude={bus.vehicle.position.longitude} latitude={bus.vehicle.position.latitude}>
+				</Marker>))
+			})
+		}
 
-				// handle the onchange event
-				onViewportChange={viewport=>this.setState({viewport})}>
-					{busMarkers}
-				</ReactMapGL>
-			</div>
+		let map = (
+			<ReactMapGL
+			// pass over the relavant attributes in case we add more later
+			width={this.state.viewport.width}
+			height={this.state.viewport.height}
+			latitude={this.state.viewport.latitude}
+			longitude={this.state.viewport.longitude}
+			zoom={this.state.viewport.zoom}
+			mapboxApiAccessToken={mapBoxToken}
+
+			// handle the onchange event
+			ref={ref=>(this.mapRef = ref)}
+			onLoad={()=>this.setState({srcMap: this.mapRef.getMap()})}
+			onViewportChange={viewport=>this.setState({viewport})}>
+				{busMarkers}
+			</ReactMapGL>
 		)
+
+		return map
 	}
 }
 
