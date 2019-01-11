@@ -30,14 +30,21 @@ class App extends Component {
 			this.setState({viewport: newViewport})
 		}
 
+		// we dont want to continuously fetch the data if this component is to unmount in any way such as it becoming added to another app as a sub component. We use a settimeout here because we have no idea if the request will return in less than 15 seconds so instead of a set interval settimeout is safer.
 		let isMounted = false
 		const fetchBusData = async()=>{
 			if (!isMounted){
 				return
 			}
-			let markerData = await axios.get("/api/transit-data")
-			this.setState({busses: markerData.data.entity})
-			setTimeout(fetchBusData, 15000) // translink's api updates once ever 30 seconds appearently so we can use this to update it at half the interval so we can get fast data but not waste too many requests
+			try{
+				let markerData = await axios.get("/api/transit-data")
+				this.setState({busses: markerData.data.entity})
+			}
+			catch(uwu){
+				// whatever we'll just try again another time
+				console.warn(uwu)
+			}
+			setTimeout(fetchBusData, 15000) // translink's api updates once ever 30 seconds apparently so we can use this to update it at half the interval so we can get fast data but not waste too many requests
 		}
 
 		this.componentDidMount = ()=>{
@@ -59,6 +66,7 @@ class App extends Component {
 	render() {
 		let busMarkers = []
 
+		// if we dont have a map bounds, we can skip this step but if we do then we can start rendering the markers if there are any.
 		let bounds = this.state.srcMap && this.state.srcMap.getBounds()
 		if (bounds){
 
@@ -67,12 +75,12 @@ class App extends Component {
 			let maxEast = bounds.getEast()
 			let maxWest = bounds.getWest()
 
-			// filter out the busses that we dont dont see so it renders faster
+			// filter out the busses that we dont see so it renders faster
 			this.state.busses.filter(bus=>{
 				let lng = bus.vehicle.position.longitude
 				let lat = bus.vehicle.position.latitude
 				return lng >= maxWest && lng <= maxEast && lat <= maxNorth && lat >= maxSouth
-			}).forEach(bus=>{ // for all busses we do see, we draw a marker for them
+			}).forEach(bus=>{ // for all busses we do see, we draw a marker for them by adding it to our marker set
 				busMarkers.push((<Marker key={bus.id} longitude={bus.vehicle.position.longitude} latitude={bus.vehicle.position.latitude}>
 				</Marker>))
 			})
@@ -88,7 +96,7 @@ class App extends Component {
 			zoom={this.state.viewport.zoom}
 			mapboxApiAccessToken={mapBoxToken}
 
-			// handle the onchange event
+			// the rest of our kinda uniqueish logic
 			ref={ref=>(this.mapRef = ref)}
 			onLoad={()=>this.setState({srcMap: this.mapRef.getMap()})}
 			onViewportChange={viewport=>this.setState({viewport})}>
