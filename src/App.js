@@ -12,9 +12,9 @@ class App extends Component {
 		viewport: {
 			width: 400,
 			height: 400,
-			latitude: 49.22160433166661,
-			longitude: -123.06265682276278,
-			zoom: 11
+			latitude: 49.281718078953695,
+			longitude: -123.12654150584596,
+			zoom: 13.2
 		},
 		busses: []
 	}
@@ -61,21 +61,24 @@ class App extends Component {
 
 		let bounds = this.state.srcMap && this.state.srcMap.getBounds()
 		if (bounds){
+
 			let maxNorth = bounds.getNorth()
 			let maxSouth = bounds.getSouth()
 			let maxEast = bounds.getEast()
 			let maxWest = bounds.getWest()
+
+			// filter out the busses that we dont dont see so it renders faster
 			this.state.busses.filter(bus=>{
 				let lng = bus.vehicle.position.longitude
 				let lat = bus.vehicle.position.latitude
 				return lng >= maxWest && lng <= maxEast && lat <= maxNorth && lat >= maxSouth
-			}).forEach(bus=>{
+			}).forEach(bus=>{ // for all busses we do see, we draw a marker for them
 				busMarkers.push((<Marker key={bus.id} longitude={bus.vehicle.position.longitude} latitude={bus.vehicle.position.latitude}>
 				</Marker>))
 			})
 		}
 
-		let map = (
+		return (
 			<ReactMapGL
 			// pass over the relavant attributes in case we add more later
 			width={this.state.viewport.width}
@@ -92,8 +95,6 @@ class App extends Component {
 				{busMarkers}
 			</ReactMapGL>
 		)
-
-		return map
 	}
 }
 
