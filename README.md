@@ -12,7 +12,8 @@ git clone https://github.com/muggy8/spair-test zhikaili
 cd zhikaili
 npm install
 npm run build
-node server```
+node server
+```
 
 Next you can visit your localhost to see the product. If you want to change the port you can call `node server` with `-d` or `-dev` to have it moved on port 5000 and you can also pass in a port using `--port=####`. Now you can visit the app via localhost in your browser
 
