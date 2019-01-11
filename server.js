@@ -34,7 +34,7 @@ server.get("/api/transit-data", async function(req, res){
 
 server.use(express.static("build"))
 
-if (argv.dev || argv.d){
+if (argv.hasOwnProperty("dev") || argv.hasOwnProperty("d")){
 	server.listen(devPort)
 	console.log("listening on port", devPort)
 }
