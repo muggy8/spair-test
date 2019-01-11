@@ -9,15 +9,28 @@ const translinkApiToken = "FSQN1BNI3ScaOXO4srsG"
 
 const server = express()
 
+let busPositionCache = {}
+let cacheCreated = 0
 server.get("/api/transit-data", async function(req, res){
 
-	let requestSettings = {
-		method: "GET",
-		url: `http://gtfs.translink.ca/gtfsposition?apikey=${translinkApiToken}`,
-		encoding: null
+	let now = Date.now()
+	if (now - cacheCreated < 10000 && !busPositionCache.error && busPositionCache.response){
+		respondToRequestWith(null, busPositionCache.response, busPositionCache.body)
+	}
+	else{
+		let requestSettings = {
+			method: "GET",
+			url: `http://gtfs.translink.ca/gtfsposition?apikey=${translinkApiToken}`,
+			encoding: null
+		}
+		request(requestSettings, function (error, response, body) {
+			cacheCreated = Date.now()
+			busPositionCache = {error, response, body}
+			respondToRequestWith(busPositionCache.error, busPositionCache.response, busPositionCache.body)
+		})
 	}
 
-	request(requestSettings, function (error, response, body) {
+	function respondToRequestWith(error, response, body){
 		res.status(response.statusCode)
 		if (!error && response.statusCode == 200) {
 			let feed = GtfsRealtimeBindings.FeedMessage.decode(body)
@@ -28,8 +41,7 @@ server.get("/api/transit-data", async function(req, res){
 			res.send(error)
 			res.end
 		}
-	})
-
+	}
 })
 
 server.use(express.static("build"))
