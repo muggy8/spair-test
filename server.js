@@ -38,6 +38,11 @@ if (argv.dev || argv.d){
 	server.listen(devPort)
 	console.log("listening on port", devPort)
 }
+else if (argv.port){
+	let customPort = argv.port
+	server.listen(customPort)
+	console.log("listening on port", customPort)
+}
 else {
 	server.listen(depPort)
 	console.log("listening on port", depPort)
