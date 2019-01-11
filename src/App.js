@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import ReactMapGL from 'react-map-gl';
-import axios from 'axios';
+import React, { Component } from 'react'
+import ReactMapGL from 'react-map-gl'
+import axios from 'axios'
+// import GtfsRealtimeBindings from 'gtfs-realtime-bindings'
 // import logo from './logo.svg';
 // import './App.css';
 const mapBoxToken = "pk.eyJ1IjoibXVnZ3k4IiwiYSI6ImNqcXMyYTk5cTB0Zms0MnA2eG95emFzZDUifQ.dVHK4TIMjLdMvJFUGRm7vQ"
-const translinkApiToken = "FSQN1BNI3ScaOXO4srsG"
 
 class App extends Component {
 
@@ -15,7 +15,8 @@ class App extends Component {
 			latitude: 37.7577,
 			longitude: -122.4376,
 			zoom: 8
-		}
+		},
+		busses: []
 	}
 
 	constructor(props){
@@ -38,6 +39,8 @@ class App extends Component {
 			window.removeEventListener("resize", onWindowResize)
 		}
 
+		// fetch the data from the translink api
+		// this.translinkApi.get("gtfsposition").then(console.log)
 	}
 	render() {
 		return (
