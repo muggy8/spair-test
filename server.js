@@ -33,7 +33,14 @@ server.get("/api/transit-data", async function(req, res){
 	function respondToRequestWith(error, response, body){
 		res.status(response.statusCode)
 		if (!error && response.statusCode == 200) {
-			let feed = GtfsRealtimeBindings.FeedMessage.decode(body)
+			let feed = null
+			if (busPositionCache.feed){
+				feed = busPositionCache.feed
+			}
+			else{
+				feed = GtfsRealtimeBindings.FeedMessage.decode(body)
+				busPositionCache.feed = feed
+			}
 			res.json(feed)
 			res.end()
 		}
