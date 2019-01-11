@@ -4,7 +4,7 @@ import ReactMapGL from 'react-map-gl';
 // import './App.css';
 
 class App extends Component {
-	accessToken = "pk.eyJ1IjoibXVnZ3k4IiwiYSI6ImNqcXMyYTk5cTB0Zms0MnA2eG95emFzZDUifQ.dVHK4TIMjLdMvJFUGRm7vQ"
+	mapBoxToken = "pk.eyJ1IjoibXVnZ3k4IiwiYSI6ImNqcXMyYTk5cTB0Zms0MnA2eG95emFzZDUifQ.dVHK4TIMjLdMvJFUGRm7vQ"
 	state = {
 		viewport: {
 			width: 400,
@@ -24,7 +24,7 @@ class App extends Component {
 				latitude={this.state.viewport.latitude}
 				longitude={this.state.viewport.longitude}
 				zoom={this.state.viewport.zoom}
-				mapboxApiAccessToken={this.accessToken}
+				mapboxApiAccessToken={this.mapBoxToken}
 
 				// handle the onchange event
 				onViewportChange={viewport=>this.setState({viewport})}/>
